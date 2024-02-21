@@ -1,27 +1,36 @@
-name: Docker Main
+name: ITO OS Web application
+
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
 jobs:
-  build-and-publish:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  deliverit:
+    needs: build
+    runs-on: ubuntu-latest
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      
+    - name: build docker image and push to hub
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with: 
           image: mahmouddwidar/dockerlab2
           registry: docker.io
           dockerfile: Dockerfile
-          context: .
-          push: true
-          tags: latest
+          username: "${{ secrets.REPO_USERNAME }}"
+          password: "${{ secrets.REPO_PASSWORD }}"
+          tags: latest  
