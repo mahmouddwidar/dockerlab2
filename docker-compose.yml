@@ -1,6 +1,0 @@
-version: '3'
-services:
-  my-php-app:
-    image: mahmouddwidar/dockerlab2:latest
-    ports:
-      - 8080:80
